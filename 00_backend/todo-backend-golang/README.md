@@ -30,15 +30,28 @@ El proyecto debe seguir la siguiente estructura basica que permita escalabilidad
 
 todo-app/
 cmd/
-    cmd/main.go
+    cmd/main.go => inicia la ejecucion del codigo
 internal/
-    internal/handlers/task.go
-    internal/models/task.go
-    internal/storage/memory.go
+    internal/handlers/task.go => handlers son funciones o metodos que gestionan eventos o solicitudes
+    internal/models/task.go => estructuras de datos de la aplicacion
+    internal/storage/memory.go => almacenamiento de datos
 pkg/
-    router/router.go
+    router/router.go => componente que dirige el trafico dentro de la aplicacion web
 
 go.mod
+
+### PLAN DE DESARROLLO
+
+Paso 1 => Configurar el modulo Go y crear la estructura del proyecto
+Paso 2 => Implementar el modelo de datos Task
+Paso 3 => Configurar el almacenamiento en memoria
+Paso 4 => Crear los endpoints en el controlador 
+Paso 5 => Configurar el enrutador y levantar el servidor
+
+### DEPENDENCIAS A INSTALAR
+go get -u github.com/gorilla/mux
+mkdir -p cmd internal/handlers internal/models internal/storage pkg/router
+
     
 
 
