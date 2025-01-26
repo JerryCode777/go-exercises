@@ -74,3 +74,4 @@ func (s *MemoryStorage) Delete(id int) error {
 	delete(s.tasks, id)
 	return nil
 }
+
