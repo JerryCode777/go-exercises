@@ -1,3 +1,4 @@
+// internal/storage/memory.go
 package storage
 
 import (
@@ -6,31 +7,39 @@ import (
 	"todo-backend-golang/internal/models"
 )
 
-// MemoryStorage	implementa un almacenamiento en memoria para tareas
+// MemoryStorage implementa un almacenamiento en memoria para tareas
 type MemoryStorage struct {
-	tasks  map[int]*models.Task // almacenamietno de tareas
-	mu     sync.Mutex           //mutex para proteger el accesos concurrente
-	nextID int                  // id para la proxima tarea
+	Tasks  map[int]*models.Task // Cambiado a mayúscula para exportarlo
+	Mu     sync.Mutex           // Cambiado a mayúscula si se necesita usar desde otro paquete
+	NextID int                  // Cambiado a mayúscula para exportarlo
 }
 
-// create agrega una nueva tarea en el almacenamiento
-func (s *MemoryStorage) Create(task *models.Task) *models.Task {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+// NewMemoryStorage crea una nueva instancia de almacenamiento en memoria
+func NewMemoryStorage() *MemoryStorage {
+	return &MemoryStorage{
+		Tasks:  make(map[int]*models.Task),
+		NextID: 1,
+	}
+}
 
-	task.ID = s.nextID
-	s.tasks[s.nextID] = task
-	s.nextID++
+// Create agrega una nueva tarea en el almacenamiento
+func (s *MemoryStorage) Create(task *models.Task) *models.Task {
+	s.Mu.Lock()
+	defer s.Mu.Unlock()
+
+	task.ID = s.NextID
+	s.Tasks[s.NextID] = task
+	s.NextID++
 	return task
 }
 
 // GetAll devuelve todas las tareas
 func (s *MemoryStorage) GetAll() []*models.Task {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.Mu.Lock()
+	defer s.Mu.Unlock()
 
 	var result []*models.Task
-	for _, task := range s.tasks {
+	for _, task := range s.Tasks {
 		result = append(result, task)
 	}
 	return result
@@ -38,10 +47,10 @@ func (s *MemoryStorage) GetAll() []*models.Task {
 
 // GetByID devuelve una tarea por su ID
 func (s *MemoryStorage) GetByID(id int) (*models.Task, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.Mu.Lock()
+	defer s.Mu.Unlock()
 
-	task, exists := s.tasks[id]
+	task, exists := s.Tasks[id]
 	if !exists {
 		return nil, errors.New("task not found")
 	}
@@ -50,10 +59,10 @@ func (s *MemoryStorage) GetByID(id int) (*models.Task, error) {
 
 // Update actualiza una tarea existente
 func (s *MemoryStorage) Update(id int, updateTask *models.Task) (*models.Task, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.Mu.Lock()
+	defer s.Mu.Unlock()
 
-	task, exists := s.tasks[id]
+	task, exists := s.Tasks[id]
 	if !exists {
 		return nil, errors.New("task not found")
 	}
@@ -64,14 +73,13 @@ func (s *MemoryStorage) Update(id int, updateTask *models.Task) (*models.Task, e
 
 // Delete elimina una tarea por su ID
 func (s *MemoryStorage) Delete(id int) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.Mu.Lock()
+	defer s.Mu.Unlock()
 
-	_, exists := s.tasks[id]
+	_, exists := s.Tasks[id]
 	if !exists {
 		return errors.New("task not found")
 	}
-	delete(s.tasks, id)
+	delete(s.Tasks, id)
 	return nil
 }
-

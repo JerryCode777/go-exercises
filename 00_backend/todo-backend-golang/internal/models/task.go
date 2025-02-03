@@ -1,3 +1,4 @@
+// internal/models/task.go
 package models
 
 //task representa una tarea en el sistema
